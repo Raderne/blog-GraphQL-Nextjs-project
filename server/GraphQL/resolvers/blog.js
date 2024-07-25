@@ -83,7 +83,7 @@ module.exports = {
     const newBlog = new Blog({
       title,
       content,
-      creator: "66a2102d4f2dacdf15e3879b",
+      creator: req.raw.userId,
     });
 
     let createdBlog;
@@ -91,7 +91,7 @@ module.exports = {
       const result = await newBlog.save();
       createdBlog = transformBlog(result);
 
-      const creator = await User.findById("66a2102d4f2dacdf15e3879b");
+      const creator = await User.findById(req.raw.userId);
       if (!creator) {
         throw new Error("User not found.");
       }
