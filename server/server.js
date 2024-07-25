@@ -7,6 +7,7 @@ const { createHandler } = require("graphql-http/lib/use/express");
 const { ruruHTML } = require("ruru/server");
 
 const connectDB = require("./MongoDB/DB/connect");
+const AuthMiddleware = require("./middleware/auth");
 
 const GraphQLSchema = require("./GraphQL/schema/index");
 const GraphQLResolver = require("./GraphQL/resolvers/index");
@@ -15,15 +16,21 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(
-  "/graphql",
-  createHandler({ schema: GraphQLSchema, rootValue: GraphQLResolver })
-);
+app.use(AuthMiddleware);
 
 app.get("/", (_req, res) => {
   res.type("html");
   res.end(ruruHTML({ endpoint: "/graphql" }));
 });
+
+app.all(
+  "/graphql",
+  createHandler({
+    schema: GraphQLSchema,
+    rootValue: GraphQLResolver,
+    context: (req) => ({ req }),
+  })
+);
 
 const start = async () => {
   try {

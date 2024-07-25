@@ -55,10 +55,26 @@ module.exports = {
       throw error;
     }
   },
-  blog: ({ id }) => {
-    return {};
+  blog: async ({ id }) => {
+    try {
+      const blog = await Blog.findById(id);
+      if (!blog) {
+        throw new Error("Blog not found.");
+      }
+
+      return transformBlog(blog);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   },
-  createBlog: async ({ blogInput }) => {
+  createBlog: async ({ blogInput }, context) => {
+    const req = context.req;
+
+    if (!req.raw.isAuth) {
+      throw new Error("Unauthenticated.");
+    }
+
     const { title, content } = blogInput;
     if (!title || !content) {
       throw new Error("Title and content are required.");
@@ -67,7 +83,7 @@ module.exports = {
     const newBlog = new Blog({
       title,
       content,
-      creator: "66a2077a508581c2ea98919a",
+      creator: "66a2102d4f2dacdf15e3879b",
     });
 
     let createdBlog;
@@ -75,7 +91,7 @@ module.exports = {
       const result = await newBlog.save();
       createdBlog = transformBlog(result);
 
-      const creator = await User.findById("66a2077a508581c2ea98919a");
+      const creator = await User.findById("66a2102d4f2dacdf15e3879b");
       if (!creator) {
         throw new Error("User not found.");
       }
@@ -88,6 +104,68 @@ module.exports = {
       throw error;
     }
   },
-  deleteBlog: ({ id }) => {},
-  updateBlog: ({ id, title, content }) => {},
+  deleteBlog: async ({ id }, context) => {
+    const req = context.req;
+    if (!req.raw.isAuth) {
+      throw new Error("Unauthenticated.");
+    }
+
+    try {
+      const blog = await Blog.findById(id).populate("creator");
+      if (!blog) {
+        throw new Error("Blog not found.");
+      }
+
+      const creator = {
+        ...blog.creator._doc,
+        createdBlogs: blog.creator.createdBlogs.filter(
+          (blogId) => blogId.toString() !== id
+        ),
+      };
+
+      await Blog.findByIdAndDelete(id);
+      await User.findByIdAndUpdate(
+        creator._id,
+        {
+          createdBlogs: creator.createdBlogs,
+        },
+        { new: true }
+      );
+
+      return transformBlog(blog);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+  updateBlog: async ({ id, title, content }, context) => {
+    const req = context.req;
+    if (!req.raw.isAuth) {
+      throw new Error("Unauthenticated user.");
+    }
+
+    if (!title && !content) {
+      throw new Error("Title or content is required.");
+    }
+
+    if (!id) {
+      throw new Error("Blog id is required.");
+    }
+
+    try {
+      const newBlog = await Blog.findById(id);
+      if (!newBlog) {
+        throw new Error("Blog not found.");
+      }
+
+      newBlog.title = title || newBlog.title;
+      newBlog.content = content || newBlog.content;
+
+      const result = await newBlog.save();
+      return transformBlog(result);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
 };
