@@ -32,6 +32,7 @@ module.exports = buildSchema(`
         blogs: [Blog!]!
         blog(id: ID!): Blog!
         login(email: String!, password: String!): AuthData!
+        UserBlogs(userId: ID!): [Blog!]
     }
 
     type RootMutation {

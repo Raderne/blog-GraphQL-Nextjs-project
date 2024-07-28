@@ -55,6 +55,24 @@ module.exports = {
       throw error;
     }
   },
+  UserBlogs: async ({ userId }, context) => {
+    const req = context.req;
+    if (!req.raw.isAuth) {
+      throw new Error("Unauthenticated.");
+    }
+    
+    try {
+      const blogs = await Blog.find({
+        creator: userId,
+      });
+      return blogs.map((blog) => {
+        return transformBlog(blog);
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
   blog: async ({ id }) => {
     try {
       const blog = await Blog.findById(id);

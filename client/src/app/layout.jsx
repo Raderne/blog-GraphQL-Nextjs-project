@@ -1,9 +1,7 @@
-import {
-  Inter,
-  Unbounded,
-  Work_Sans,
-} from "next/font/google";
+import { Inter, Unbounded, Work_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import { AppProvider } from "./context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +23,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <AppProvider>
+          <Navbar />
+          {children}
+        </AppProvider>
+      </body>
     </html>
   );
 }

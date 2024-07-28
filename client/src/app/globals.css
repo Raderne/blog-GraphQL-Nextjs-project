@@ -9,10 +9,13 @@
 }
 
 html {
-  background-color: #101114;
+  color: white;
 }
 
 @layer utilities {
+  .fit-text {
+    @apply text-[6rem] md:text-[10rem] lg:text-[16rem] xl:text-[21rem];
+  }
   .input-class {
     @apply text-16 placeholder:text-16 bg-black-1 rounded-[6px] placeholder:text-gray-1 border-none text-gray-1;
   }
