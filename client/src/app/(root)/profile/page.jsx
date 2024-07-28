@@ -84,7 +84,9 @@ const ProfilePage = () => {
             <p>Loading...</p>
           ) : (
             blogs.map((blog) => {
-              return <BlogCard key={blog._id} blog={blog} />;
+              return <BlogCard key={blog._id} blog={blog}
+                extraStyles="border-white-1 bg-black-3"
+              />;
             })
           )}
         </div>

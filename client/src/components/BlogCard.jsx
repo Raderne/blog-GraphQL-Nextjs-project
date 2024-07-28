@@ -1,6 +1,6 @@
 import React from "react";
 
-const BlogCard = ({ blog }) => {
+const BlogCard = ({ blog, extraStyles }) => {
   const { title, updatedAt } = blog;
 
   let formattedDate = new Date(+updatedAt).toLocaleDateString("en-US", {
@@ -10,7 +10,7 @@ const BlogCard = ({ blog }) => {
   });
 
   return (
-    <div className="flex flex-col px-12 py-8 gap-10 bg-black-3 rounded-3xl border-4 min-w-96 border-white-1">
+    <div className={"flex flex-col flex-1 px-12 py-8 gap-10 rounded-3xl border-4 min-w-96 " + extraStyles}>
       <h2 className="text-2xl font-bold">{title}</h2>
       <p className="text-sm font-bold">{formattedDate}</p>
     </div>
