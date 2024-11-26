@@ -18,7 +18,7 @@ const Home = () => {
           " fit-text leading-[1.1] text-center text-purple-1 select-none -z-10"
         }
       >
-        INKSPOT
+        INKBLOG
       </h1>
 
       <div className="flex">

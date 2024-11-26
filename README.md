@@ -22,6 +22,10 @@ The server folder contains the back-end code, which is built with Node.js, Expre
 - `server.js`: Entry point for the server application.
 - `package.json`: Dependencies and scripts for the server side.
 
+## Screenshots
+![Home](/screenshots/home.png)
+![Login](/screenshots/login.png)
+
 ## Setup
 
 ### Prerequisites
@@ -73,7 +77,7 @@ PORT=4000
 2. **Start the client:**
 
    ```bash
-   cd ../client
+   cd ./client
    npm run dev
    ```
 
